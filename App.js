@@ -1,14 +1,19 @@
 import React from 'react';
+import { setDummyData } from './utils/helpers'
 import { StyleSheet, Text, View } from 'react-native';
-// import { createAppContainer, createBottomTabNavigator, createStackNavigator } from 'react-navigation'
+import { createAppContainer, createBottomTabNavigator, createStackNavigator } from 'react-navigation'
 // Styled Components
-import {CenteredContainer, BigTitle}  from './components/styled'
+import { CenteredContainer, BigTitle } from './components/styled'
 
 export default class App extends React.Component {
+  componentDidMount(){
+    setDummyData()
+  }
+
   render() {
     return (
       <CenteredContainer>
-        <BigTitle>Done!</BigTitle>
+        <BigTitle>Welcome to Mobile FlashCards</BigTitle>
       </CenteredContainer>
     );
   }
@@ -16,7 +21,6 @@ export default class App extends React.Component {
 
 // TODO:
 // Specific Requirements
-// Use create-react-native-app to build your project.
 // Allow users to create a deck which can hold an unlimited number of cards.
 // Allow users to add a card to a specific deck.
 // The front of the card should display the question.
