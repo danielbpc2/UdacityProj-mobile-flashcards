@@ -56,14 +56,21 @@ const stackRoutes = {
       header: null
     }
   },
+  DeckView:{
+    screen: DeckView,
+  },
+  NewQuestion: {
+    screen: NewQuestionView,
+  }
 }
 
 const stackOptions = {
   defaultNavigationOptions: {
-    // headerStyle: {
-//       // backgroundColor: ,
-//     // },
-//     // headerTintColor: ,
+    headerStyle: {
+      backgroundColor: Platform.OS === "ios" ? '#fff' : '#222222',
+      height: 40,
+    },
+    headerTintColor: Platform.OS === "ios" ? '#222222' : '#fff',
   }
 }
 

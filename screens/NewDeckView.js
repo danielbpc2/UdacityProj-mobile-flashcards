@@ -2,7 +2,7 @@
 // An option to enter in the title for the new deck
 // An option to submit the new deck title
 import React, {Component} from 'react'
-import { View, Text, TextInput, KeyboardAvoidingView } from 'react-native'
+import { View, Text, KeyboardAvoidingView } from 'react-native'
 import { CenteredContainer, BigTitle, StyledFormInput, StyledButton } from '../components/styled'
 import { saveDeckTitle } from '../utils/api'
 import { addDeck } from '../actions'
@@ -23,10 +23,10 @@ class NewDeckView extends Component {
 
     this.setState({title: ''})
 
-    this.toHome()
+    this.goBack()
   }
 
-  toHome = () => {
+  goBack = () => {
     this.props.navigation.dispatch(NavigationActions.back({
       key: 'New Deck'
     }))

@@ -4,8 +4,8 @@
 import React, {Component} from 'react'
 import { View, Text } from 'react-native'
 import { CenteredContainer, BigTitle } from '../components/styled'
-import { getDecks, addCardToDeck } from '../utils/api'
-import { receiveDecks, addCardDeck } from '../actions'
+import { getDecks } from '../utils/api'
+import { receiveDecks } from '../actions'
 import { connect } from 'react-redux'
 
 class DeckListView extends Component {
@@ -30,7 +30,7 @@ class DeckListView extends Component {
     return(
       <CenteredContainer>
         {decks.map(deck => (
-          <BigTitle key={deck.title}> {deck.title} - {deck.questions.length} Cards</BigTitle>
+          <BigTitle onPress={() => this.props.navigation.navigate('DeckView', {deck: deck.title}) } key={deck.title}> {deck.title} - {deck.questions.length} Cards</BigTitle>
           ))
         }
       </CenteredContainer>
