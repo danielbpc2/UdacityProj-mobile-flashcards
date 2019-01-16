@@ -1,20 +1,96 @@
 import React from 'react';
-import { setDummyData } from './utils/helpers'
-import { StyleSheet, Text, View } from 'react-native';
-import { createAppContainer, createBottomTabNavigator, createStackNavigator } from 'react-navigation'
-// Styled Components
-import { CenteredContainer, BigTitle } from './components/styled'
+import { setDummyData, setDummyCards } from './utils/helpers'
+import { createStore } from 'redux'
+import { Provider } from 'react-redux'
+import reducer from './reducers'
+import { createAppContainer, createMaterialTopTabNavigator, createBottomTabNavigator, createStackNavigator } from 'react-navigation'
+import { Constants } from 'expo'
+// components
+import { StyleSheet, Text, View, Platform, StatusBar } from 'react-native';
+import { DeckListView, DeckView, NewDeckView, NewQuestionView, QuizView } from './screens'
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
+
+const routes = {
+    'Deck List': DeckListView,
+    // DeckView: DeckView,
+    'New Deck': NewDeckView,
+    // NewQuestion: NewQuestionView,
+    // Quiz: QuizView
+  }
+
+const tabOptions = {
+    defaultNavigationOptions: ({ navigation }) => ({
+      tabBarIcon: ({ tintColor }) => {
+        const { routeName } = navigation.state;
+        switch (routeName){
+          case 'Deck List' :
+          return <MaterialCommunityIcons name="cards" size={30} color={tintColor} />
+          case 'New Deck' :
+          return <MaterialIcons name="create-new-folder" size={30} color={tintColor} />
+      }
+    },
+    tabBarOptions: {
+      showIcon: true,
+      activeTintColor: Platform.OS === 'ios' ?  '#222222': 'white',
+      style: {
+        shadowRadius: 6,
+        height: 70,
+        backgroundColor: Platform.OS === 'ios' ? '#F6F6F6' : '#222222',
+        shadowColor: 'rgba(0, 0, 0, 0.24)',
+        shadowOffset: {
+          width: 0,
+          height: 3,
+        },
+        shadowOpacity: 1,
+      },
+    },
+  })
+}
+
+const Tabs = Platform.OS === "ios" ? createBottomTabNavigator(routes, tabOptions) : createMaterialTopTabNavigator(routes, tabOptions);
+
+const stackRoutes = {
+  Home: {
+    screen: Tabs,
+    navigationOptions: {
+      header: null
+    }
+  },
+}
+
+const stackOptions = {
+  defaultNavigationOptions: {
+    // headerStyle: {
+//       // backgroundColor: ,
+//     // },
+//     // headerTintColor: ,
+  }
+}
+
+const StackNavigator = createAppContainer(createStackNavigator(stackRoutes, stackOptions))
+
+const MStatusBar = ({backgroundColor, ...props}) => {
+  return(
+    <View style={{backgroundColor: backgroundColor, height: Constants.statusBarHeight}}>
+      <StatusBar translucent backgroundColor={backgroundColor} {...props}/>
+    </View>
+    )
+}
 
 export default class App extends React.Component {
   componentDidMount(){
     setDummyData()
+    setDummyCards()
   }
 
   render() {
     return (
-      <CenteredContainer>
-        <BigTitle>Welcome to Mobile FlashCards</BigTitle>
-      </CenteredContainer>
+      <Provider store={createStore(reducer)}>
+        <View style={{flex: 1}}>
+          <MStatusBar backgroundColor='#222222' barStyle='light-content'/>
+          <StackNavigator/>
+        </View>
+      </Provider>
     );
   }
 }

@@ -4,7 +4,7 @@ import { AsyncStorage } from 'react-native'
 const DECKKEY = 'Decks'
 // getDecks: return all of the decks along with their titles, questions, and answers.
 export const getDecks = () => {
-  return AsyncStorage.getItem(DECKKEY)
+  return AsyncStorage.getItem(DECKKEY).then(JSON.parse)
 }
 // getDeck: take in a single id argument and return the deck associated with that id.
 export function getDeck(deckName) {
