@@ -14,7 +14,7 @@ class DeckListView extends Component {
 
   renderItem = ({item}) => (
       <DeckCard underlayColor="rgb(200,200,200)" onPress={() => this.props.navigation.navigate('DeckView', {deck: item.title}) }>
-       <BigTitle>{item.title} - {item.questions.length} Cards</BigTitle>
+       <BigTitle>{item.title} - {item.questions.length} {item.questions.length > 1 ? "Cards" : "Card"}</BigTitle>
       </DeckCard>
    )
 

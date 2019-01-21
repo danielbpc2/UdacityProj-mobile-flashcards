@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import { View, Text, Animated } from 'react-native'
 import { CenteredContainer, BigTitle, StyledButton, QuizCard } from '../components/styled'
 import { formatScore, clearLocalNotifications, setLocalNotification } from '../utils/helpers'
+import { NavigationActions } from 'react-navigation'
 import { connect } from 'react-redux'
 
 const AnimatedBigTitle = Animated.createAnimatedComponent(BigTitle)
@@ -43,10 +44,9 @@ class QuizView extends Component {
   createQuiz = () => {
     const { questions } = this.props.deckInfo
     this.setState({quizCards: []})
-
-    for (i = 0; i < Math.floor(Math.random() * questions.length + 3); i ++ ){
+    for (let i = 0; i < questions.length; i ++ ){
       this.setState((prevState) => ({
-        quizCards: [...prevState.quizCards, questions[Math.floor(Math.random() * questions.length)]],
+        quizCards: [...prevState.quizCards, questions[i]],
         correct: 0,
         complete: false,
         ready: false,
@@ -54,6 +54,25 @@ class QuizView extends Component {
         cardColor: `rgb(${ Math.floor(Math.random() * (255 - 150)) + 150},${ Math.floor(Math.random() * (255 - 150)) + 150},${ Math.floor(Math.random() * (255 - 150)) + 150})`
       }))
     }
+  }
+
+  shuffle = (array) => {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      // And swap it with the current element.
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+
+    return array;
   }
 
   setFirstCard = () => {
@@ -117,10 +136,12 @@ class QuizView extends Component {
       flipValue,
       nextValue
     } = this.state
+
     const spin = reShuffleValue.interpolate({
       inputRange: [0, 1, 2],
       outputRange: ['0deg', '2deg', '-2deg']
     })
+
     const flip = flipValue.interpolate({
       inputRange: [0, 360],
       outputRange: ['0deg', '360deg']
@@ -137,7 +158,7 @@ class QuizView extends Component {
           <StyledButton backgroundColor="rgb(190,230,190)" borderLineColor="rgb(200,250,200)" onPress={this.setFirstCard}>
             <BigTitle color="#F6F6F6">Start!</BigTitle>
           </StyledButton>
-          <StyledButton onPress={() => { this.textRotateAnimation(); this.createQuiz() } }>
+          <StyledButton onPress={() => { this.textRotateAnimation(); this.shuffle(quizCards) } }>
             <BigTitle>Re-Shuffle</BigTitle>
           </StyledButton>
         </CenteredContainer>
@@ -150,6 +171,9 @@ class QuizView extends Component {
           <BigTitle>Score: {formatScore(correct, totalCards)}%</BigTitle>
           <StyledButton onPress={this.createQuiz}>
             <BigTitle>Try Again!</BigTitle>
+          </StyledButton>
+          <StyledButton onPress={() => (this.props.navigation.dispatch(NavigationActions.back()))}>
+            <BigTitle>Back To Deck</BigTitle>
           </StyledButton>
         </CenteredContainer>
       )

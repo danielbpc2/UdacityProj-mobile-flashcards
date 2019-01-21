@@ -20,10 +20,25 @@ class NewQuestionView extends Component {
     }
   }
 
+  handleChange({question, answer}) {
+    if (question)
+        this.setState({ question });
+    else if (answer)
+        this.setState({ answer });
+  }
+
   submit = () => {
     const { question, answer } = this.state
     const { dispatch } = this.props
     const { deck } = this.props.navigation.state.params
+
+    if(!question) {
+      return alert("You need to write your question!")
+    }
+
+    if(!answer) {
+      return alert("You need to write your answer!")
+    }
 
     dispatch(addCardDeck(deck, {question, answer}))
     addCardToDeck(deck, {question, answer})
@@ -45,13 +60,13 @@ class NewQuestionView extends Component {
         </BigTitle>
         <StyledFormInput
             placeholder="Your Question?"
-            onChangeText={(text) => this.setState({question: text})}
+            onChangeText={(text) => this.handleChange({question: text})}
             value={this.state.title}
             maxLength={120}
           />
         <StyledFormInput
             placeholder="Your Answer!"
-            onChangeText={(text) => this.setState({answer: text})}
+            onChangeText={(text) => this.handleChange({answer: text})}
             value={this.state.title}
           />
         <StyledButton onPress={this.submit}>

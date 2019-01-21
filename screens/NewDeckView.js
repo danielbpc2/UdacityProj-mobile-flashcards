@@ -4,7 +4,6 @@ import { CenteredContainer, BigTitle, StyledFormInput, StyledButton } from '../c
 import { saveDeckTitle } from '../utils/api'
 import { addDeck } from '../actions'
 import { connect } from 'react-redux'
-import { NavigationActions } from 'react-navigation'
 
 class NewDeckView extends Component {
   state = {
@@ -12,21 +11,23 @@ class NewDeckView extends Component {
   }
 
   submit = () => {
+
     const { title } = this.state
     const { dispatch } = this.props
 
+     if(!title) {
+      return alert("You need to name your Deck!")
+    }
     dispatch(addDeck(title))
     saveDeckTitle(title)
 
-    this.setState({title: ''})
-
     this.goBack()
+
+    this.setState({title: ''})
   }
 
   goBack = () => {
-    this.props.navigation.dispatch(NavigationActions.back({
-      key: 'New Deck'
-    }))
+    this.props.navigation.navigate('DeckView', {deck: this.state.title})
   }
 
   render(){

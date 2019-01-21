@@ -6,7 +6,7 @@ This project was made for the Udacity Nanodegree in React!
 
 Clone this project and execute:
 ```sh
-yarn install
-yarn start
+npm install
+npm start
 ```
 ### This project was only tested on a Android device!
