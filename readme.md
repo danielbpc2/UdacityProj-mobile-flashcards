@@ -1,6 +1,6 @@
 # Mobile Flashcards - Udacity React Native Project
 
-This project was made for Udacity Nanodegree in React!
+This project was made for the Udacity Nanodegree in React!
 
 ## To Start!
 
