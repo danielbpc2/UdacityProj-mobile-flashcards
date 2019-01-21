@@ -1,4 +1,4 @@
-### Mobile Flashcards - Udacity React Native Project
+# Mobile Flashcards - Udacity React Native Project
 
 This project was made for Udacity Nanodegree in React!
 
@@ -9,4 +9,4 @@ Clone this project and execute:
 yarn install
 yarn start
 ```
-# This project was only tested on a Android device!
+### This project was only tested on a Android device!
