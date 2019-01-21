@@ -1,6 +1,3 @@
-// Deck List View (Default View)
-// displays the title of each Deck
-// displays the number of cards in each deck
 import React, {Component} from 'react'
 import { View, Text, FlatList, Platform } from 'react-native'
 import { CenteredContainer, BigTitle, DeckCard } from '../components/styled'

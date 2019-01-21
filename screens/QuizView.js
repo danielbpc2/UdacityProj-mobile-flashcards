@@ -1,15 +1,11 @@
-// Quiz View
-// displays a card question
-// an option to view the answer (flips the card)
-// a "Correct" button
-// an "Incorrect" button
-// the number of cards left in the quiz
-// Displays the percentage correct once the quiz is complete
 import React, {Component} from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, Animated } from 'react-native'
 import { CenteredContainer, BigTitle, StyledButton, QuizCard } from '../components/styled'
-import { formatScore, clearLocalNotifications } from '../utils/helpers'
+import { formatScore, clearLocalNotifications, setLocalNotification } from '../utils/helpers'
 import { connect } from 'react-redux'
+
+const AnimatedBigTitle = Animated.createAnimatedComponent(BigTitle)
+const AnimatedCard = Animated.createAnimatedComponent(QuizCard)
 
 class QuizView extends Component {
     static navigationOptions = ({navigation}) => {
@@ -26,11 +22,22 @@ class QuizView extends Component {
     correct: 0,
     ready: false,
     displayAnswer: false,
-    complete: false
+    complete: false,
+    reShuffleValue: new Animated.Value(0),
+    flipValue: new Animated.Value(0),
+    nextValue: new Animated.Value(0)
   }
 
   componentDidMount () {
     this.createQuiz()
+  }
+
+  textRotateAnimation = () => {
+    Animated.sequence([
+      Animated.timing(this.state.reShuffleValue, {toValue: 2, duration: 250}),
+      Animated.timing(this.state.reShuffleValue, {toValue: 1, duration: 250}),
+      Animated.timing(this.state.reShuffleValue, {toValue: 0, duration: 250}),
+    ]).start()
   }
 
   createQuiz = () => {
@@ -55,7 +62,11 @@ class QuizView extends Component {
 
   flip = () => {
     this.setState((state) => ({displayAnswer: !state.displayAnswer}))
+    Animated.sequence([
+      Animated.timing(this.state.flipValue, {toValue: 360, duration: 500}),
+    ]).start(this.state.flipValue.resetAnimation())
   }
+
   correct = () => {
     this.state.quizCards.shift()
     this.setState((state) => ({
@@ -68,6 +79,10 @@ class QuizView extends Component {
       this.setState({complete: true})
       clearLocalNotifications().then(setLocalNotification())
     }
+    Animated.sequence([
+      Animated.timing(this.state.nextValue, {toValue: 1000, duration: 250}),
+      Animated.timing(this.state.nextValue, {toValue: 0, duration: 250}),
+    ]).start()
   }
 
   incorrect = () => {
@@ -81,19 +96,48 @@ class QuizView extends Component {
       this.setState({complete: true})
       clearLocalNotifications().then(setLocalNotification())
     }
+
+    Animated.sequence([
+      Animated.timing(this.state.nextValue, {toValue: 1000, duration: 250}),
+      Animated.timing(this.state.nextValue, {toValue: 0, duration: 250}),
+    ]).start()
   }
 
   render(){
-    const { currentCard, totalCards, quizCards, correct, complete, ready, displayAnswer, cardColor } = this.state
+    const {
+      currentCard,
+      totalCards,
+      quizCards,
+      correct,
+      complete,
+      ready,
+      displayAnswer,
+      cardColor,
+      reShuffleValue,
+      flipValue,
+      nextValue
+    } = this.state
+    const spin = reShuffleValue.interpolate({
+      inputRange: [0, 1, 2],
+      outputRange: ['0deg', '2deg', '-2deg']
+    })
+    const flip = flipValue.interpolate({
+      inputRange: [0, 360],
+      outputRange: ['0deg', '360deg']
+    })
+
     if (ready === false) {
       return (
         <CenteredContainer>
-          <BigTitle>This Quiz contains {quizCards.length} cards!</BigTitle>
+          <AnimatedBigTitle
+            style={{transform: [{rotate: spin}]}}
+
+          >This Quiz contains {quizCards.length} cards!</AnimatedBigTitle>
           <BigTitle>Are you ready?!</BigTitle>
           <StyledButton backgroundColor="rgb(190,230,190)" borderLineColor="rgb(200,250,200)" onPress={this.setFirstCard}>
             <BigTitle color="#F6F6F6">Start!</BigTitle>
           </StyledButton>
-          <StyledButton onPress={this.createQuiz}>
+          <StyledButton onPress={() => { this.textRotateAnimation(); this.createQuiz() } }>
             <BigTitle>Re-Shuffle</BigTitle>
           </StyledButton>
         </CenteredContainer>
@@ -116,20 +160,22 @@ class QuizView extends Component {
             <Text style={{fontSize: 14}}>Score: {correct}</Text>
             <Text style={{fontSize: 14}}>Cards Left on Quiz: {quizCards.length}/{totalCards}</Text>
           </View>
-          <QuizCard backgroundColor={cardColor}>
+          <AnimatedCard
+            style={{transform: [{rotateY: flip}, {translateX: nextValue}]}}
+            backgroundColor={cardColor}>
             <BigTitle>{displayAnswer ? 'Answer:' : 'Question:'}</BigTitle>
             <BigTitle style={{textAlign: 'justify'}}>{displayAnswer ? currentCard.answer : currentCard.question}</BigTitle>
-          </QuizCard>
+          </AnimatedCard>
           <StyledButton onPress={this.flip}>
             <BigTitle>Flip</BigTitle>
           </StyledButton>
           { displayAnswer &&
             <View>
               <StyledButton backgroundColor="rgb(190,230,190)" borderLineColor="rgb(200,250,200)" onPress={this.correct}>
-                <Text>Button: Correct </Text>
+                <BigTitle color='white'>Correct </BigTitle>
               </StyledButton>
               <StyledButton backgroundColor="rgb(230,120,130)" borderLineColor="rgb(255,200,200)" onPress={this.incorrect}>
-                <Text>Button: Incorrect </Text>
+                <BigTitle color='white'>Incorrect </BigTitle>
               </StyledButton>
             </View>
           }

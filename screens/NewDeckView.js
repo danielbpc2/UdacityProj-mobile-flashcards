@@ -1,6 +1,3 @@
-// New Deck View
-// An option to enter in the title for the new deck
-// An option to submit the new deck title
 import React, {Component} from 'react'
 import { View, Text, KeyboardAvoidingView } from 'react-native'
 import { CenteredContainer, BigTitle, StyledFormInput, StyledButton } from '../components/styled'
