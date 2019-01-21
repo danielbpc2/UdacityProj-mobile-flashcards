@@ -51,6 +51,7 @@ class NewQuestionView extends Component {
             placeholder="Your Question?"
             onChangeText={(text) => this.setState({question: text})}
             value={this.state.title}
+            maxLength={120}
           />
         <StyledFormInput
             placeholder="Your Answer!"

@@ -21,6 +21,7 @@ class DeckView extends Component {
       title,
       questions
     } = this.props.deckInfo
+
     return(
       <CenteredContainer>
         <BigTitle>Deck: {title}</BigTitle>
@@ -29,10 +30,13 @@ class DeckView extends Component {
         <StyledButton onPress={() => this.props.navigation.navigate('NewQuestion', {deck: title})}>
           <BigTitle>Add Cards to this deck</BigTitle>
         </StyledButton>
-
-        <StyledButton backgroundColor="rgb(190,230,190)" borderLineColor="rgb(200,250,200)">
-          <BigTitle color='#fff'>Play a Quiz</BigTitle>
-        </StyledButton>
+        {questions.length !== 0
+          ?
+          <StyledButton backgroundColor="rgb(190,230,190)" borderLineColor="rgb(200,250,200)">
+            <BigTitle onPress={() => this.props.navigation.navigate('Quiz', {deck: title}) } color='#fff'>Play a Quiz</BigTitle>
+          </StyledButton>
+          : null
+        }
       </CenteredContainer>
     )
   }

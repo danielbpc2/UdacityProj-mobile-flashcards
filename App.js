@@ -1,5 +1,5 @@
 import React from 'react';
-import { setDummyData, setDummyCards } from './utils/helpers'
+import { setDummyData, setDummyCards, setLocalNotification } from './utils/helpers'
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import reducer from './reducers'
@@ -61,6 +61,9 @@ const stackRoutes = {
   },
   NewQuestion: {
     screen: NewQuestionView,
+  },
+  Quiz: {
+    screen: QuizView,
   }
 }
 
@@ -86,8 +89,7 @@ const MStatusBar = ({backgroundColor, ...props}) => {
 
 export default class App extends React.Component {
   componentDidMount(){
-    setDummyData()
-    setDummyCards()
+    setLocalNotification()
   }
 
   render() {

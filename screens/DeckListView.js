@@ -2,8 +2,8 @@
 // displays the title of each Deck
 // displays the number of cards in each deck
 import React, {Component} from 'react'
-import { View, Text } from 'react-native'
-import { CenteredContainer, BigTitle } from '../components/styled'
+import { View, Text, FlatList, Platform } from 'react-native'
+import { CenteredContainer, BigTitle, DeckCard } from '../components/styled'
 import { getDecks } from '../utils/api'
 import { receiveDecks } from '../actions'
 import { connect } from 'react-redux'
@@ -14,6 +14,12 @@ class DeckListView extends Component {
       this.props.dispatch(receiveDecks(data))
     })
   }
+
+  renderItem = ({item}) => (
+      <DeckCard underlayColor="rgb(200,200,200)" onPress={() => this.props.navigation.navigate('DeckView', {deck: item.title}) }>
+       <BigTitle>{item.title} - {item.questions.length} Cards</BigTitle>
+      </DeckCard>
+   )
 
   render(){
     const { decks }= this.props
@@ -28,12 +34,12 @@ class DeckListView extends Component {
       )
     }
     return(
-      <CenteredContainer>
-        {decks.map(deck => (
-          <BigTitle onPress={() => this.props.navigation.navigate('DeckView', {deck: deck.title}) } key={deck.title}> {deck.title} - {deck.questions.length} Cards</BigTitle>
-          ))
-        }
-      </CenteredContainer>
+      <FlatList
+        style={{backgroundColor: Platform.OS === 'ios' ? '#F6F6F6' : '#222222'}}
+        data={decks}
+        renderItem={this.renderItem}
+        keyExtractor={(item) => item.title}
+        />
     )
   }
 }
